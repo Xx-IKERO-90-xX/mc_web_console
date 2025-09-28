@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 import controller.SecurityController as security
 from models.User import User
+from flask_socketio import SocketIO, send, emit
 
 
 settings = {}
@@ -23,6 +24,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 app.app_context()
+
+socketio = SocketIO(app)
 
 # Ruta principal del index
 @app.route('/', methods=['GET'])
@@ -66,11 +69,17 @@ async def logout():
     session.clear()
     return redirect(url_for('index'))
 
+
+
+## SOCKETIO
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-    app.run(
+    socketio.run(
+        app,
         host=settings['flask']['host'],
         port=settings['flask']['port'],
         debug=settings['flask']['debug']
