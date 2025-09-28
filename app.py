@@ -100,5 +100,6 @@ if __name__ == '__main__':
         app,
         host=settings['flask']['host'],
         port=settings['flask']['port'],
-        debug=settings['flask']['debug']
+        debug=settings['flask']['debug'],
+        allow_unsafe_werkzeug=True
     )
