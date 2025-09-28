@@ -10,6 +10,9 @@ from extensions import db
 import controller.SecurityController as security
 from models.User import User
 from flask_socketio import SocketIO, send, emit
+import multiprocessing
+import controller.McServerController as mcrcon
+
 
 
 settings = {}
@@ -72,6 +75,21 @@ async def logout():
 
 
 ## SOCKETIO
+@socketio.on('send_command')
+def handle_command(data):
+    result_queue = multiprocessing.Queue()
+    process = multiprocessing.Process(
+        target=mcrcon.execute_mc_command, 
+        args=(data['command'], result_queue)
+    )
+    
+    process.start()
+    process.join()
+
+    response = result_queue.get()
+    response = mcrcon.clean_output(response)
+
+    emit('server_output', {'output': response})
 
 
 if __name__ == '__main__':
