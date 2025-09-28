@@ -7,7 +7,7 @@ services:
       - "5003:5003"
     volumes:
       - .:/usr/src/app
-    networkd:
+    networks:
       mc-block-net:
         ipv4_address: 172.90.0.40
 
