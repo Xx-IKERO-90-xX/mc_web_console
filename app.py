@@ -2,7 +2,7 @@ import os
 import sys
 import json
 from datetime import datetime
-from flask import request, Flask, render_template, redirect, session, sessions, url_for
+from flask import Blueprint, request, Flask, render_template, redirect, session, sessions, url_for
 from werkzeug.utils import secure_filename
 import asyncio
 from flask_sqlalchemy import SQLAlchemy
@@ -12,8 +12,6 @@ from models.User import User
 from flask_socketio import SocketIO, send, emit
 import multiprocessing
 import controller.McServerController as mcrcon
-
-
 
 settings = {}
 with open("settings.json") as setting:
@@ -30,49 +28,15 @@ app.app_context()
 
 socketio = SocketIO(app)
 
-# Ruta principal del index
+from routes import auth_bp, console_bp
+app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(console_bp, url_prefix="/console")
+
 @app.route('/', methods=['GET'])
 async def index():
     if 'id' in session:
-        return render_template('index.jinja')
-    else:
-        return redirect(url_for('login'))
-
-
-# Ruta para el Login
-@app.route('/auth/login', methods=['GET', 'POST'])
-async def login():
-    if 'id' not in session:
-        if request.method == 'GET':
-            return render_template('login.jinja')
-        else:
-            username = request.form.get('username')
-            passwd = request.form.get('passwd')
-
-            if await security.verify_login(username, passwd):
-                user = db.session.query(User).filter(User.username == username).first()
-                if user.mc_console or user.role == 'Admin':
-                    session['id'] = user.id
-                    session['username'] = user.username
-                    return redirect(url_for('index'))
-
-                else:
-                    error_msg = "Acceso no autorizado!"
-                    return render_template('login.jinja')
-            else:
-                error_msg = "Usuario o contraseña incorrectos!"
-                return render_template('login.jinja', error_msg=error_msg)
-    else:
-        return redirect(url_for('index'))
-
-
-# Ruta para desloguearse
-@app.route('/auth/logout', methods=['GET'])
-async def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-
+        return redirect(url_for('console.index'))
+    return redirect(url_for('auth.index'))
 
 ## SOCKETIO
 @socketio.on('send_command')
