@@ -3,18 +3,64 @@
 {%block title%} Inicio {%endblock%}
 
 {%block content%}
-<script src="/static/scripts/commands.js" type="module"></script>
-<br><br><br> 
-<div id="terminal" class="flex h-150 w-full p-4 text-white-500 flex-col bg-base-300 rounded shadow shadow-green-500 overflow-auto">
-    
+<br><br><br>
+<div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+    <table class="mx-auto table">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>
+                    <button class="btn btn-sm btn-circle btn-success" onclick="addConsole.showModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                        </svg>
+                    </button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for console in consoles%}
+            <tr>
+                <td>{{console.name}}</td>
+                <td>{{console.status}}</td>
+                <td></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
 </div>
-<br>
-<div class="flex card bg-base-300 rounded-box rounded shadow shadow-green-500 grid h-32 grow place-items-center">
-    <form id="command_form" class="flex">
-        <input id="commandInput" type="text" class="input input-success lg:w-130" />
-        <button id="btnSend" class="btn btn-success">Enviar</button>
-    </form>
-</div>
-<script src="/static/scripts/commands.js" type="module"></script>
 
+<dialog id="addConsole" class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">Agregar Nueva Consola</h3>
+        <hr />
+        <form method="post">
+            <br>
+            <div>
+                <label for="name-input" class="font-bold"><strong>Nombre</strong></label><br>
+                <input type="text" name="name" id="name-input" class="input w-full input-sm input-success" />
+            </div>
+            <br>
+            <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label for="name-input" class="font-bold"><strong>Ip</strong></label><br>
+                    <input type="text" name="ip" id="ip-input" class="input w-full input-sm input-success">
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label for="port-input" class="font-bold"><strong>Puerto</strong></label><br>
+                    <input type="number" name="port" id="port-input" class="input w-full input-sm input-success">
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-block btn-success font-bold">Agregar</button>
+        </form>
+    </div>
+</dialog>
 {%endblock%}
