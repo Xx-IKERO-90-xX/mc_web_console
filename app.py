@@ -36,7 +36,7 @@ app.register_blueprint(console_bp, url_prefix="/console")
 async def index():
     if 'id' in session:
         return redirect(url_for('console.index'))
-    return redirect(url_for('auth.index'))
+    return redirect(url_for('auth.login'))
 
 ## SOCKETIO
 @socketio.on('send_command')

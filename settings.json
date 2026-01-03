@@ -1,9 +1,9 @@
 {
     "mysql": {
-        "host": "100.116.29.49",
+        "host": "127.0.0.1",
         "user": "root",
         "passwd": "ikero9090",
-        "db": "ADMINDB",
+        "db": "PG_ADMIN",
         "auth_plugin": "mysql_native_password"
     },
     "mcrcon": {
