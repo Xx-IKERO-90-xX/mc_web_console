@@ -5,7 +5,7 @@
 {%block content%}
 <br><br><br>
 <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-    <table class="mx-auto table">
+    <table class="mx-auto table shadow shadow-green-500">
         <!-- head -->
         <thead>
             <tr>
@@ -26,36 +26,81 @@
             {%for console in consoles%}
             <tr>
                 <td>{{console.name}}</td>
-                <td>{{console.status}}</td>
-                <td></td>
+                <td>
+                    {%if console.status == "online"%}
+                    <div aria-label="online" class="status status-success"></div> Server is online
+                    {%else%}
+                    <div aria-label="error" class="status status-error"></div> Server is down
+                    {%endif%}
+                </td>
+                <td>
+                    <a href="#" type="button" class="btn btn-info btn-circle btn-sm font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-terminal" viewBox="0 0 16 16">
+                            <path
+                                d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9M3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708z" />
+                            <path
+                                d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </a>
+                    <a href="{{url_for('console.delete_console', id=console.id)}}" type="button" class="btn btn-error btn-circle btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-trash-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                        </svg>
+                    </a>
+                </td>
             </tr>
             {%endfor%}
         </tbody>
     </table>
 </div>
+<div class="join shadow shadow-green-500 my-4">
+    {%if consoles.has_prev %}
+    <a type="button" class="join-item btn">«</a>
+    {%endif%}
+    <button class="join-item btn">Page {{consoles.page}}</button>
+    {%if consoles.has_next%}
+    <a type="button" class="join-item btn">»</a>
+    {%endif%}
+</div>
 
 <dialog id="addConsole" class="modal">
-    <div class="modal-box">
+    <div class="modal-box shadow shadow-green-500">
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
         <h3 class="font-bold text-lg">Agregar Nueva Consola</h3>
         <hr />
-        <form method="post">
+        <form action="{{url_for('console.add_console')}}" method="post">
             <br>
             <div>
                 <label for="name-input" class="font-bold"><strong>Nombre</strong></label><br>
-                <input type="text" name="name" id="name-input" class="input w-full input-sm input-success" />
+                <input type="text" name="name" id="name-input" class="input w-full input-sm input-success" required />
+            </div>
+            <br>
+            <div>
+                <label for="passwd-input" class="font-bold">Constraseña</label><br>
+                <input type="password" name="passwd" id="passwd-input" class="input w-full input-sm input-success"
+                    required />
+            </div>
+            <br>
+            <div>
+                <label for="passwd-confirm-input" class="font-bold">Confirmar Contraseña</label><br>
+                <input type="password" name="passwd2" id="passwd-confirm-input"
+                    class="input w-full input-sm input-success" required />
             </div>
             <br>
             <div class="flex flex-wrap -mx-3 mb-2">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label for="name-input" class="font-bold"><strong>Ip</strong></label><br>
-                    <input type="text" name="ip" id="ip-input" class="input w-full input-sm input-success">
+                    <input type="text" name="ip" id="ip-input" class="input w-full input-sm input-success" required />
                 </div>
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label for="port-input" class="font-bold"><strong>Puerto</strong></label><br>
-                    <input type="number" name="port" id="port-input" class="input w-full input-sm input-success">
+                    <input type="number" name="port" id="port-input" class="input w-full input-sm input-success"
+                        required />
                 </div>
             </div>
             <br>

@@ -15,7 +15,7 @@ async def verify_login(username, passwd):
 
 
 # Encripta la contraseña
-def encrypt_passwd(passwd):
+async def encrypt_passwd(passwd):
     hash_passwd = pbkdf2_sha256.hash(passwd)
     return hash_passwd
 

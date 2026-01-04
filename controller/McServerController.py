@@ -20,18 +20,23 @@ settings = {}
 with open('settings.json') as archivo:
     settings = json.load(archivo)
 
-HOST = settings["mcrcon"]["host"]
-RCON_PORT = settings["mcrcon"]["port"]
-PASSWD_RCON = settings["mcrcon"]["passwd"]
-
 
 # Permite la ejecución de un comando del servidor de minecraft a través de la aplicación web
-def execute_mc_command(command, result_queue):
+def execute_mc_command(command, ip, port, passwd, result_queue):
     response = ""
     
-    with MCRcon(HOST, PASSWD_RCON, port=RCON_PORT) as mcr:
+    with MCRcon(ip, passwd, port=port) as mcr:
         response = mcr.command(command)
         result_queue.put(response)
+
+async def test_connection(ip, port, passwd):
+    try:
+        with MCRcon(ip, passwd, port=port) as mcr:
+            response = mcr.command("list")
+            return True
+    except Exception as e:
+        return False
+    
 
 # Corrige ciertas imperfecciones en la salida de los comandos
 def clean_output(output):
