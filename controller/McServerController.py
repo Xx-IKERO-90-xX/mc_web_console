@@ -2,10 +2,8 @@ import os
 import sys
 from flask import request, Flask, render_template, redirect, session, sessions, url_for
 import json
-import random
 import asyncio
 from mcrcon import MCRcon
-import multiprocessing
 import re
 
 sys.path.append("..")
@@ -29,14 +27,18 @@ def execute_mc_command(command, ip, port, passwd, result_queue):
         response = mcr.command(command)
         result_queue.put(response)
 
-async def test_connection(ip, port, passwd):
+# Funcion que verifica la conexion con el rcon de un servidor de minecraft.
+async def test_connection(ip, port) -> bool:
     try:
-        with MCRcon(ip, passwd, port=port) as mcr:
-            response = mcr.command("list")
-            return True
-    except Exception as e:
+        reader, writer = await asyncio.wait_for(
+            asyncio.open_connection(ip, port),
+            timeout=2
+        )
+        writer.close()
+        await writer.wait_closed()
+        return True
+    except:
         return False
-    
 
 # Corrige ciertas imperfecciones en la salida de los comandos
 def clean_output(output):

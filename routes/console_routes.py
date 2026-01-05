@@ -16,8 +16,11 @@ async def index():
         consoles = db.session.query(Console)
         
         for console in consoles:
-            if await mcrcon.test_connection(console.ip, console.port, console.passwd):
+            print(console)
+            if await mcrcon.test_connection(console.ip, console.port):
+                print(await mcrcon.test_connection(console.ip, console.port))
                 console.status = "online"
+                print(console.status)
 
         consoles = consoles.paginate(page=page, per_page=5)
         return render_template('console/index.jinja', consoles=consoles)
@@ -43,18 +46,20 @@ async def add_console():
             flash("Las contraseñas no coinciden!", "error")
             return redirect(url_for('console.index'))
         
-        print(await mcrcon.test_connection(ip, port, passwd))
+        if await mcrcon.test_connection(ip, port):
+            passwd_hashed = await security.encrypt_passwd(passwd)
         
-        passwd_hashed = await security.encrypt_passwd(passwd)
+            try:
+                new_console = Console(name=name, ip=ip, port=port, passwd=passwd_hashed ,status="Offline")
+                db.session.add(new_console)
+                db.session.commit()
+            except Exception as e:
+                flash("Error al agregar la consola! Verifique que el nombre o IP no estén repetidos.", "error")
+                return redirect(url_for('console.index'))
         
-        try:
-            new_console = Console(name=name, ip=ip, port=port, passwd=passwd_hashed ,status="Offline")
-            db.session.add(new_console)
-            db.session.commit()
-        except Exception as e:
-            flash("Error al agregar la consola! Verifique que el nombre o IP no estén repetidos.", "error")
             return redirect(url_for('console.index'))
         
+        flash("No se pudo conectar al servidor de Minecraft con los datos proporcionados!", "error")
         return redirect(url_for('console.index'))
 
     return redirect(url_for('auth.login'))

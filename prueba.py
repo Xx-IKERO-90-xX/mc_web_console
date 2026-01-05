@@ -8,4 +8,4 @@ def test_connection(ip, port, passwd):
     except Exception as e:
         print("connection failed:", e)
 
-test_connection("protea.seedloaf.com", 49308, "f738684afcf4fd4dc49682e9")
+test_connection("protea.seedloaf.com", 49308, "6de7638c5e502db26d43af40")
