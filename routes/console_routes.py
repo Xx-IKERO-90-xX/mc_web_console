@@ -16,11 +16,8 @@ async def index():
         consoles = db.session.query(Console)
         
         for console in consoles:
-            print(console)
             if await mcrcon.test_connection(console.ip, console.port):
-                print(await mcrcon.test_connection(console.ip, console.port))
                 console.status = "online"
-                print(console.status)
 
         consoles = consoles.paginate(page=page, per_page=5)
         return render_template('console/index.jinja', consoles=consoles)
