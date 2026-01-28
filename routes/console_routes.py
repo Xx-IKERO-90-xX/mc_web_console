@@ -43,20 +43,16 @@ async def add_console():
             flash("Las contraseñas no coinciden!", "error")
             return redirect(url_for('console.index'))
         
-        if await mcrcon.test_connection(ip, port):
-            passwd_hashed = await security.encrypt_passwd(passwd)
+        passwd_hashed = await security.encrypt_passwd(passwd)
         
-            try:
-                new_console = Console(name=name, ip=ip, port=port, passwd=passwd_hashed ,status="Offline")
-                db.session.add(new_console)
-                db.session.commit()
-            except Exception as e:
-                flash("Error al agregar la consola! Verifique que el nombre o IP no estén repetidos.", "error")
-                return redirect(url_for('console.index'))
-        
+        try:
+            new_console = Console(name=name, ip=ip, port=port, passwd=passwd_hashed ,status="Offline")
+            db.session.add(new_console)
+            db.session.commit()
+        except Exception as e:
+            flash("Error al agregar la consola! Verifique que el nombre o IP no estén repetidos.", "error")
             return redirect(url_for('console.index'))
         
-        flash("No se pudo conectar al servidor de Minecraft con los datos proporcionados!", "error")
         return redirect(url_for('console.index'))
 
     return redirect(url_for('auth.login'))
